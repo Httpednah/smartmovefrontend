@@ -4,7 +4,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #f3f4f6;
+  background: linear-gradient(180deg, #f9fafb, #f3f4f6);
   padding: 20px;
   font-family: Inter, system-ui, sans-serif;
 }
@@ -12,29 +12,33 @@
 .login-logo {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 24px;
+  gap: 12px;
+  margin-bottom: 28px;
 }
 
 .logo-box {
   background: #111827;
   color: white;
-  padding: 10px;
-  border-radius: 10px;
-  font-weight: 700;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 18px;
 }
 
 .login-card {
-  background: #fdfaf3;
+  background: #ffffff;
   width: 100%;
   max-width: 440px;
   padding: 36px;
-  border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  border-radius: 18px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
 .login-card h2 {
   margin-bottom: 6px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
 }
 
 .login-card p {
@@ -49,31 +53,35 @@
 
 .form-group label {
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   margin-bottom: 6px;
   display: block;
+  color: #374151;
 }
 
 input,
 select {
   width: 100%;
   padding: 12px;
-  border-radius: 8px;
+  border-radius: 10px;
   border: 1px solid #e5e7eb;
   font-size: 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 input:focus,
 select:focus {
   outline: none;
   border-color: #111827;
+  box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.15);
 }
 
 .remember-me {
   display: flex;
   gap: 8px;
   font-size: 13px;
-  margin: 12px 0 20px;
+  margin: 14px 0 22px;
+  color: #374151;
 }
 
 .btn-signin {
@@ -81,10 +89,16 @@ select:focus {
   padding: 12px;
   background: #111827;
   color: white;
-  border-radius: 8px;
+  border-radius: 10px;
   border: none;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.btn-signin:hover {
+  background: #1f2937;
+  transform: translateY(-1px);
 }
 
 .btn-signin:disabled {
@@ -94,9 +108,15 @@ select:focus {
 
 .divider {
   text-align: center;
-  margin: 24px 0 16px;
+  margin: 28px 0 18px;
   font-size: 12px;
   color: #9ca3af;
+  position: relative;
+}
+
+.divider span {
+  background: #ffffff;
+  padding: 0 12px;
 }
 
 .social-group {
@@ -107,26 +127,39 @@ select:focus {
 
 .social-group button {
   padding: 10px;
-  border-radius: 8px;
+  border-radius: 10px;
   border: 1px solid #e5e7eb;
-  background: white;
+  background: #f9fafb;
   font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.social-group button:hover {
+  background: #f3f4f6;
+  transform: translateY(-1px);
 }
 
 .signup-text {
   text-align: center;
-  margin-top: 20px;
+  margin-top: 22px;
   font-size: 14px;
+  color: #374151;
 }
 
 .signup-text span {
   font-weight: 600;
   cursor: pointer;
+  color: #111827;
+}
+
+.signup-text span:hover {
+  text-decoration: underline;
 }
 
 .footer-legal {
-  margin-top: 28px;
+  margin-top: 30px;
   font-size: 12px;
   color: #6b7280;
 }

@@ -1,16 +1,21 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-toastify";
 import "./Login.css";
 
-export default function Login({ onSuccess }) {
+export default function Login({ role: initialRole = "client", onSuccess }) {
   const { signIn } = useContext(AuthContext);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("client");
+  const [role, setRole] = useState(initialRole);
   const [remember, setRemember] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // Sync role if coming from Home
+  useEffect(() => {
+    setRole(initialRole);
+  }, [initialRole]);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -27,10 +32,10 @@ export default function Login({ onSuccess }) {
 
     setLoading(true);
 
-    // 🔐 MOCK AUTH — replace with API later
+    // 🔐 MOCK AUTH (replace later)
     setTimeout(() => {
-      if (email === "admin@smartmove.com" && role !== "admin") {
-        toast.error("This account is not registered as admin");
+      if (role === "admin" && email !== "admin@smartmove.com") {
+        toast.error("Admin access requires admin credentials");
         setLoading(false);
         return;
       }
@@ -45,7 +50,7 @@ export default function Login({ onSuccess }) {
       toast.success(`Welcome back, ${role.toUpperCase()} 🎉`);
       setLoading(false);
 
-      if (onSuccess) onSuccess();
+      if (onSuccess) onSuccess(role);
     }, 800);
   }
 
@@ -62,7 +67,7 @@ export default function Login({ onSuccess }) {
       toast.success(`Logged in as ${demoRole.toUpperCase()}`);
       setLoading(false);
 
-      if (onSuccess) onSuccess();
+      if (onSuccess) onSuccess(demoRole);
     }, 500);
   }
 
@@ -74,8 +79,17 @@ export default function Login({ onSuccess }) {
       </div>
 
       <div className="login-card">
-        <h2>Welcome Back</h2>
-        <p>Log in to manage your moves</p>
+        <h2>
+          {role === "admin" && "Admin Login"}
+          {role === "mover" && "Mover Login"}
+          {role === "client" && "Client Login"}
+        </h2>
+
+        <p>
+          {role === "admin" && "Manage platform operations and approvals"}
+          {role === "mover" && "View jobs, update move status"}
+          {role === "client" && "Manage your moves and bookings"}
+        </p>
 
         <form onSubmit={handleSubmit}>
           {/* ROLE SELECT */}

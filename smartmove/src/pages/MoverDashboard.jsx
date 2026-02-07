@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/MoverDashboard.css";
+import "./MoverDashboard.css";
 
 export default function MoverDashboard() {
   return (

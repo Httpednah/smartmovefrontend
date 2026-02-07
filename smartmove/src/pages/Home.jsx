@@ -4,10 +4,12 @@ import "./Home.css";
 export default function Home({ onNavigate }) {
   return (
     <div className="home">
-      {/* Navbar */}
+      {/* NAVBAR */}
       <header className="navbar">
         <div className="nav-left">
-          <div className="logo">SmartMove</div>
+          <div className="logo" onClick={() => onNavigate("home")}>
+            SmartMove
+          </div>
           <ul className="nav-links">
             <li onClick={() => onNavigate("services")}>Services</li>
             <li onClick={() => onNavigate("about")}>About</li>
@@ -28,7 +30,7 @@ export default function Home({ onNavigate }) {
         </div>
       </header>
 
-      {/* Hero Section */}
+      {/* HERO */}
       <section className="hero">
         <div className="hero-left">
           <div className="hero-logo">SmartMove</div>
@@ -45,7 +47,7 @@ export default function Home({ onNavigate }) {
             <div className="role-cards">
               <div
                 className="role-card"
-                onClick={() => onNavigate("login-client")}
+                onClick={() => onNavigate("login", { role: "client" })}
               >
                 <h4>Client</h4>
                 <p>Plan your move, book movers, track inventory.</p>
@@ -54,7 +56,7 @@ export default function Home({ onNavigate }) {
 
               <div
                 className="role-card"
-                onClick={() => onNavigate("login-mover")}
+                onClick={() => onNavigate("login", { role: "mover" })}
               >
                 <h4>Mover</h4>
                 <p>Manage jobs, update status, communicate with clients.</p>
@@ -63,7 +65,7 @@ export default function Home({ onNavigate }) {
 
               <div
                 className="role-card admin"
-                onClick={() => onNavigate("login-admin")}
+                onClick={() => onNavigate("login", { role: "admin" })}
               >
                 <h4>Admin</h4>
                 <p>Approve movers, monitor bookings, view analytics.</p>
@@ -72,7 +74,7 @@ export default function Home({ onNavigate }) {
             </div>
           </div>
 
-          {/* Features */}
+          {/* FEATURES */}
           <div className="features-cards">
             <div className="feature-card">✔ Fully Insured & Licensed</div>
             <div className="feature-card">⏱ On-Time Guarantee</div>
@@ -81,7 +83,6 @@ export default function Home({ onNavigate }) {
           </div>
         </div>
 
-        {/* HERO IMAGE — UNTOUCHED */}
         <div className="hero-right">
           <img
             src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c"
@@ -90,7 +91,7 @@ export default function Home({ onNavigate }) {
         </div>
       </section>
 
-      {/* Footer */}
+      {/* FOOTER */}
       <footer className="footer">
         <p>Connect with us</p>
         <div className="social-icons">

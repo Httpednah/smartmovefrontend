@@ -1,7 +1,14 @@
 [build]
-publish = "dist"
-command = "npm ci && npm run build"
+  base = "smartmove"
+  publish = "dist"
+  command = "npm ci && npm run build"
 
 [build.environment]
-NODE_VERSION = "20"
+  NODE_VERSION = "20"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
 

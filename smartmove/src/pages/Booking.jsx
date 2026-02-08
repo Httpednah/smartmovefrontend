@@ -23,154 +23,54 @@ export default function Booking({ onNavigate, selectedMover, onConfirm }) {
   });
 
   const steps = [
-    {
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M12 11c1.657 0 3-1.567 3-3.5S13.657 4 12 4 9 5.567 9 7.5 10.343 11 12 11z"
-          />
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M12 2v2m0 18v-6"
-          />
-        </svg>
-      ),
-      label: "Move Details",
-      sub: "Where and when",
-    },
-    {
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M3 9l9-6 9 6v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-          />
-        </svg>
-      ),
-      label: "Home Details",
-      sub: "Size and layout",
-    },
-    {
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7"
-          />
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M16 3v4M8 3v4"
-          />
-        </svg>
-      ),
-      label: "Services",
-      sub: "What you need",
-    },
-    {
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2-1.343-2-3-2z"
-          />
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M12 2v2m0 16v2"
-          />
-        </svg>
-      ),
-      label: "Contact Info",
-      sub: "Get your quote",
-    },
+    { label: "Move Details", sub: "Where & when" },
+    { label: "Home Details", sub: "Size & items" },
+    { label: "Services", sub: "Additional services" },
+    { label: "Contact Info", sub: "Your details" },
+    { label: "Payment", sub: "Secure checkout" },
   ];
 
-  function handleNext() {
-    if (currentStep < 4) {
+  const handleNext = () => {
+    if (currentStep < steps.length) {
       setCurrentStep(currentStep + 1);
     } else {
-      // Finalize: if an onConfirm handler exists, call it with mover and date
-      if (onConfirm) {
-        if (!formData.moveDate)
-          return alert("Please select a move date before confirming.");
-        onConfirm({
-          mover: selectedMover,
-          date: formData.moveDate,
-          contact: {
-            name: formData.name,
-            phone: formData.phone,
-            email: formData.email,
-          },
-        });
-      } else {
-        alert("Quote request submitted! We will contact you shortly.");
-        onNavigate("home");
-      }
+      // Final step: Mpesa payment simulation
+      handleMpesaPayment();
     }
-  }
+  };
 
-  function handleBack() {
+  const handleBack = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
+    } else {
+      // Step 1: navigate home
+      onNavigate && onNavigate("home");
     }
-  }
+  };
 
-  function handleChange(e) {
+  const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
       [name]: type === "checkbox" ? checked : value,
     });
-  }
+  };
+
+  // Placeholder for Mpesa payment
+  const handleMpesaPayment = () => {
+    alert("Redirecting to Mpesa for payment...");
+    // Here you would integrate actual Mpesa API
+    // After successful payment:
+    alert("Payment successful! Your quote is confirmed.");
+    onNavigate && onNavigate("home");
+  };
 
   return (
     <div className="booking-page">
-      {/* Header is rendered globally by the app; booking content follows */}
-
       <div className="booking-content">
         <div className="booking-header">
-          <h2>Get Your Free Quote</h2>
-          <p>
-            Fill out the form below to receive a personalized moving estimate
-          </p>
+          <h2>Get Your Moving Quote</h2>
+          <p>Fill in the form to get a personalized moving estimate</p>
         </div>
 
         {/* Stepper */}
@@ -178,12 +78,11 @@ export default function Booking({ onNavigate, selectedMover, onConfirm }) {
           {steps.map((step, index) => (
             <div
               key={index}
-              className={`step-item ${currentStep === index + 1 ? "active" : ""} ${currentStep > index + 1 ? "completed" : ""}`}
-              onClick={() =>
-                currentStep > index + 1 && setCurrentStep(index + 1)
-              }
+              className={`step-item ${
+                currentStep === index + 1 ? "active" : ""
+              } ${currentStep > index + 1 ? "completed" : ""}`}
             >
-              <div className="step-icon">{step.icon}</div>
+              <div className="step-icon">{index + 1}</div>
               <span className="step-label">{step.label}</span>
               <span className="step-sub">{step.sub}</span>
             </div>
@@ -193,68 +92,10 @@ export default function Booking({ onNavigate, selectedMover, onConfirm }) {
         {/* Form Card */}
         <div className="booking-card">
           <h3 className="form-section-title">
-            Step {currentStep} of 4: {steps[currentStep - 1].label}
+            Step {currentStep} of {steps.length}: {steps[currentStep - 1].label}
           </h3>
 
-          {/* Selected mover card */}
-          <div style={{ marginBottom: 16 }}>
-            {selectedMover ? (
-              <div
-                className="card"
-                style={{ display: "flex", alignItems: "center", gap: 12 }}
-              >
-                <div
-                  style={{
-                    width: 56,
-                    height: 56,
-                    borderRadius: 12,
-                    background: "#eef2ff",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontWeight: 700,
-                    color: "#4338ca",
-                  }}
-                >
-                  {selectedMover.avatar || selectedMover.name?.charAt(0)}
-                </div>
-                <div>
-                  <div style={{ fontWeight: 600 }}>{selectedMover.name}</div>
-                  <div style={{ fontSize: 13, color: "#6b7280" }}>
-                    {selectedMover.reviews} reviews • $
-                    {selectedMover.pricePerKm}/km
-                  </div>
-                </div>
-                <div style={{ marginLeft: "auto" }}>
-                  <button
-                    className="btn-secondary"
-                    onClick={() => onNavigate("movers")}
-                  >
-                    Change
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div
-                className="card"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <div style={{ color: "#6b7280" }}>No mover selected</div>
-                <button
-                  className="btn-primary"
-                  onClick={() => onNavigate("movers")}
-                >
-                  Choose Mover
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* Step 1: Move Details */}
+          {/* Step Content */}
           {currentStep === 1 && (
             <div className="step-content">
               <div className="form-group">
@@ -265,13 +106,12 @@ export default function Booking({ onNavigate, selectedMover, onConfirm }) {
                   value={formData.moveType}
                   onChange={handleChange}
                 >
-                  <option value="">Select move type</option>
+                  <option value="">Select Move Type</option>
                   <option value="local">Local Move</option>
                   <option value="intercity">Inter-City Move</option>
                   <option value="office">Office Relocation</option>
                 </select>
               </div>
-
               <div className="form-group">
                 <label>Preferred Move Date</label>
                 <input
@@ -282,7 +122,6 @@ export default function Booking({ onNavigate, selectedMover, onConfirm }) {
                   onChange={handleChange}
                 />
               </div>
-
               <LocationGroup
                 title="Moving From"
                 data={formData}
@@ -298,7 +137,6 @@ export default function Booking({ onNavigate, selectedMover, onConfirm }) {
             </div>
           )}
 
-          {/* Step 2: Home Details */}
           {currentStep === 2 && (
             <div className="step-content">
               <div className="form-group">
@@ -309,7 +147,7 @@ export default function Booking({ onNavigate, selectedMover, onConfirm }) {
                   value={formData.homeSize}
                   onChange={handleChange}
                 >
-                  <option value="">Select home size</option>
+                  <option value="">Select Home Size</option>
                   <option value="bedsitter">Bedsitter</option>
                   <option value="studio">Studio</option>
                   <option value="1br">1 Bedroom</option>
@@ -318,9 +156,8 @@ export default function Booking({ onNavigate, selectedMover, onConfirm }) {
                   <option value="4br">4+ Bedrooms</option>
                 </select>
               </div>
-
               <div className="form-group">
-                <label>Approximate Number of Items</label>
+                <label>Approx. Number of Items</label>
                 <input
                   type="number"
                   name="items"
@@ -330,61 +167,11 @@ export default function Booking({ onNavigate, selectedMover, onConfirm }) {
                   onChange={handleChange}
                 />
               </div>
-
-              <div className="inventory-tips">
-                <p
-                  style={{
-                    fontSize: "14px",
-                    color: "#6b7280",
-                    marginBottom: "12px",
-                    display: "flex",
-                    gap: 8,
-                    alignItems: "center",
-                  }}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12h6M12 3v2m0 14v2m7-9h2M3 12H1m16.07 6.07l1.41 1.41M4.22 4.22L5.64 5.64M16.07 5.93l1.41-1.41M4.22 19.78l1.42-1.42"
-                    />
-                  </svg>
-                  Use our{" "}
-                  <a
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      onNavigate("inventory");
-                    }}
-                  >
-                    Inventory Checklist
-                  </a>{" "}
-                  to count your items
-                </p>
-              </div>
             </div>
           )}
 
-          {/* Step 3: Services */}
           {currentStep === 3 && (
             <div className="step-content">
-              <p
-                style={{
-                  fontSize: "14px",
-                  color: "#374151",
-                  marginBottom: "20px",
-                }}
-              >
-                Select additional services you may need:
-              </p>
-
               <div className="services-checkboxes">
                 <label className="checkbox-item">
                   <input
@@ -396,11 +183,10 @@ export default function Booking({ onNavigate, selectedMover, onConfirm }) {
                   <span className="checkbox-label">
                     <span className="checkbox-title">Packing Services</span>
                     <span className="checkbox-desc">
-                      We pack your items professionally
+                      Professional packing of items
                     </span>
                   </span>
                 </label>
-
                 <label className="checkbox-item">
                   <input
                     type="checkbox"
@@ -411,11 +197,10 @@ export default function Booking({ onNavigate, selectedMover, onConfirm }) {
                   <span className="checkbox-label">
                     <span className="checkbox-title">Storage</span>
                     <span className="checkbox-desc">
-                      Secure storage for your belongings
+                      Safe storage of belongings
                     </span>
                   </span>
                 </label>
-
                 <label className="checkbox-item">
                   <input
                     type="checkbox"
@@ -434,7 +219,6 @@ export default function Booking({ onNavigate, selectedMover, onConfirm }) {
             </div>
           )}
 
-          {/* Step 4: Contact Info */}
           {currentStep === 4 && (
             <div className="step-content">
               <div className="form-group">
@@ -448,7 +232,6 @@ export default function Booking({ onNavigate, selectedMover, onConfirm }) {
                   onChange={handleChange}
                 />
               </div>
-
               <div className="input-row">
                 <div className="form-group">
                   <label>Phone Number</label>
@@ -476,17 +259,28 @@ export default function Booking({ onNavigate, selectedMover, onConfirm }) {
             </div>
           )}
 
+          {currentStep === 5 && (
+            <div className="step-content">
+              <p>
+                You are ready to pay KES 89,900 (example amount). Click below to
+                pay securely via Mpesa.
+              </p>
+              <button className="btn-mpesa" onClick={handleMpesaPayment}>
+                Pay with Mpesa
+              </button>
+            </div>
+          )}
+
           {/* Navigation */}
           <div className="booking-actions">
             <button className="btn-back" onClick={handleBack}>
               ← Back
             </button>
             <button className="btn-next" onClick={handleNext}>
-              {currentStep === 4 ? "Get Quote" : "Next →"}
+              {currentStep === steps.length ? "Pay →" : "Next →"}
             </button>
           </div>
         </div>
-
         <p className="security-note">
           🔒 Your information is secure and will never be shared
         </p>

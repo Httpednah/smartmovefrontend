@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import "./AdminDashboard.css";
 
 export default function Admin() {
+  const [activeTab, setActiveTab] = useState("Overview");
+
   const stats = [
     { label: "Total Revenue", value: "$124,592", trend: "+12.5%", isUp: true },
     { label: "Active Moves", value: "48", trend: "+8.2%", isUp: true },
@@ -53,76 +55,79 @@ export default function Admin() {
   ];
 
   return (
-    <div className="admin-dashboard">
+    <div className="admin-dashboard animate-fadeIn">
+      {/* Header */}
       <header className="admin-header">
         <div className="admin-title">
           <h1>Admin Dashboard</h1>
-          <p>Manage your moving business operations</p>
+          <p>Manage your moving business operations efficiently</p>
         </div>
         <div className="admin-actions">
-          <button className="btn-social">View Website</button>
-          <button className="btn-signin" style={{ padding: "8px 16px" }}>
-            📅 Schedule Move
-          </button>
+          <button className="btn-social">🌐 View Website</button>
+          <button className="btn-signin">📅 Schedule Move</button>
         </div>
       </header>
 
-      {/* High-Level Stats */}
+      {/* Stats */}
       <section className="stats-grid">
-        {stats.map((stat, index) => (
-          <div key={index} className="stat-card">
+        {stats.map((stat, i) => (
+          <div key={i} className="stat-card hover-card">
             <div className="stat-header">
               <span>{stat.label}</span>
-              <div className="stat-icon">📈</div>
+              <div className="stat-icon">📊</div>
             </div>
             <span className="stat-value">{stat.value}</span>
             <div
               className={`stat-trend ${stat.isUp ? "trend-up" : "trend-down"}`}
             >
-              {stat.isUp ? "↗" : "↘"} {stat.trend} vs last month
+              {stat.isUp ? "↑" : "↓"} {stat.trend} vs last month
             </div>
           </div>
         ))}
       </section>
 
+      {/* Tabs */}
       <nav className="admin-tabs">
-        <div className="tab active">Overview</div>
-        <div className="tab">Moves</div>
-        <div className="tab">Quotes</div>
-        <div className="tab">Customers</div>
-        <div className="tab">Analytics</div>
+        {["Overview", "Moves", "Quotes", "Customers", "Analytics"].map(
+          (tab) => (
+            <div
+              key={tab}
+              className={`tab ${activeTab === tab ? "active" : ""}`}
+              onClick={() => setActiveTab(tab)}
+            >
+              {tab}
+            </div>
+          ),
+        )}
       </nav>
 
-      {/* Recent Activity List */}
-      <section className="moves-section">
-        <h2>Recent Moves</h2>
-        <p style={{ fontSize: "13px", color: "#6b7280" }}>
-          Latest booking activities
-        </p>
-
-        <div className="moves-list">
-          {recentMoves.map((move, index) => (
-            <div key={index} className="move-item">
-              <div className="move-info">
-                <h4>
-                  {move.id}
-                  <span className={`status-tag status-${move.status}`}>
-                    {move.status.replace("-", " ")}
-                  </span>
-                </h4>
-                <p style={{ fontWeight: "500", color: "#374151" }}>
-                  {move.client}
-                </p>
-                <p>{move.route}</p>
+      {/* Content */}
+      {activeTab === "Moves" && (
+        <section className="moves-section scrollable">
+          <h2>Recent Moves</h2>
+          <p className="text-muted">Latest booking activities</p>
+          <div className="moves-list">
+            {recentMoves.map((move, i) => (
+              <div key={i} className="move-item hover-card">
+                <div className="move-info">
+                  <h4>
+                    {move.id}{" "}
+                    <span className={`status-tag status-${move.status}`}>
+                      {move.status.replace("-", " ")}
+                    </span>
+                  </h4>
+                  <p className="move-client">{move.client}</p>
+                  <p className="move-route">{move.route}</p>
+                </div>
+                <div className="move-finance">
+                  <span className="move-price">{move.price}</span>
+                  <span className="move-date">{move.date}</span>
+                </div>
               </div>
-              <div className="move-finance">
-                <span className="move-price">{move.price}</span>
-                <span className="move-date">{move.date}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

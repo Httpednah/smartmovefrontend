@@ -32,6 +32,7 @@ export default function Inventory({ onNavigate }) {
   }, [items]);
 
   function applyTemplate(name) {
+    setTemplate(name);
     const list = TEMPLATES[name].map((i) => ({ text: i, done: false }));
     setItems(list);
   }
@@ -58,58 +59,45 @@ export default function Inventory({ onNavigate }) {
 
   return (
     <div className="inventory-page">
-      {/* Header is rendered globally by the app; inventory content follows */}
+      {/* Back Button */}
+      <div className="inventory-header">
+        <button className="btn-back" onClick={() => onNavigate("home")}>
+          ← Back to Home
+        </button>
+      </div>
 
       <div className="inventory-content">
-        {/* Header Card */}
-        <div className="card mb-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        {/* Progress Card */}
+        <div className="card mb-6 progress-card">
+          <div className="progress-header">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">
-                Inventory Checklist
-              </h2>
-              <p className="text-gray-600 mt-1">
-                Organize your move room by room
-              </p>
+              <h2>Inventory Checklist</h2>
+              <p>Organize your move room by room</p>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="text-right">
-                <p className="text-sm font-medium text-gray-900">
-                  {completedCount} of {items.length} items
-                </p>
-                <p className="text-sm text-gray-500">{progress}% complete</p>
-              </div>
-              <div className="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center">
-                <span className="text-indigo-600 font-semibold">
-                  {progress}%
-                </span>
-              </div>
+            <div className="progress-circle">
+              <span>{progress}%</span>
             </div>
           </div>
-          {/* Progress Bar */}
-          <div className="mt-4 h-2 bg-gray-100 rounded-full overflow-hidden">
+          <div className="progress-bar">
             <div
-              className="h-full bg-indigo-600 rounded-full transition-all duration-300"
+              className="progress-fill"
               style={{ width: `${progress}%` }}
             ></div>
           </div>
+          <p className="progress-text">
+            {completedCount} of {items.length} items completed
+          </p>
         </div>
 
-        {/* Template Selection */}
+        {/* Templates */}
         <div className="card mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            Quick Start Templates
-          </h3>
-          <div className="flex flex-wrap gap-3">
+          <h3>Quick Start Templates</h3>
+          <div className="template-buttons">
             {Object.keys(TEMPLATES).map((t) => (
               <button
                 key={t}
                 onClick={() => applyTemplate(t)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  template === t
-                    ? "bg-indigo-100 text-indigo-700 border-2 border-indigo-300"
-                    : "bg-gray-50 text-gray-700 border-2 border-transparent hover:bg-gray-100"
-                }`}
+                className={`template-btn ${template === t ? "active" : ""}`}
               >
                 {t}
               </button>
@@ -119,35 +107,29 @@ export default function Inventory({ onNavigate }) {
 
         {/* Add Custom Item */}
         <div className="card mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            Add Custom Item
-          </h3>
-          <div className="flex gap-3">
+          <h3>Add Custom Item</h3>
+          <div className="custom-add">
             <input
               type="text"
               placeholder="Enter item name..."
               value={custom}
               onChange={(e) => setCustom(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && addCustom()}
-              className="input-field flex-1"
             />
-            <button onClick={addCustom} className="btn-primary">
-              Add Item
+            <button className="btn-primary" onClick={addCustom}>
+              Add
             </button>
           </div>
         </div>
 
         {/* Items List */}
         <div className="card">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            Your Items
-          </h3>
+          <h3>Your Items</h3>
           {items.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="h-16 w-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
+            <div className="empty-state">
+              <div className="empty-icon">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-8 w-8 text-gray-400"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -160,33 +142,16 @@ export default function Inventory({ onNavigate }) {
                   />
                 </svg>
               </div>
-              <p className="text-gray-500">
-                No items yet. Add items above or select a template.
-              </p>
+              <p>No items yet. Add items above or select a template.</p>
             </div>
           ) : (
-            <ul className="space-y-3">
+            <ul className="item-list">
               {items.map((it, i) => (
-                <li
-                  key={i}
-                  className={`flex items-center gap-4 p-4 rounded-xl border transition-all duration-200 ${
-                    it.done
-                      ? "bg-gray-50 border-gray-100"
-                      : "bg-white border-gray-100 hover:border-indigo-200"
-                  }`}
-                >
-                  <button
-                    onClick={() => toggleIndex(i)}
-                    className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
-                      it.done
-                        ? "bg-indigo-600 border-indigo-600"
-                        : "border-gray-300 hover:border-indigo-500"
-                    }`}
-                  >
+                <li key={i} className={it.done ? "done" : ""}>
+                  <button onClick={() => toggleIndex(i)} className="check-btn">
                     {it.done && (
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4 text-white"
                         viewBox="0 0 20 20"
                         fill="currentColor"
                       >
@@ -198,29 +163,9 @@ export default function Inventory({ onNavigate }) {
                       </svg>
                     )}
                   </button>
-                  <span
-                    className={`flex-1 text-gray-900 ${it.done ? "line-through text-gray-400" : ""}`}
-                  >
-                    {it.text}
-                  </span>
-                  <button
-                    onClick={() => removeItem(i)}
-                    className="p-2 text-gray-400 hover:text-red-500 transition-colors"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                      />
-                    </svg>
+                  <span>{it.text}</span>
+                  <button onClick={() => removeItem(i)} className="delete-btn">
+                    ✕
                   </button>
                 </li>
               ))}
@@ -228,11 +173,10 @@ export default function Inventory({ onNavigate }) {
           )}
         </div>
 
-        {/* Role Info */}
+        {/* User Role */}
         <div className="card mt-6">
-          <p className="text-sm text-gray-500">
-            <span className="font-medium text-gray-700">Current role:</span>{" "}
-            {user ? user.role : "guest"}
+          <p>
+            <strong>Current role:</strong> {user ? user.role : "Guest"}
           </p>
         </div>
       </div>

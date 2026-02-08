@@ -4,114 +4,115 @@ import "./Home.css";
 export default function Home({ onNavigate }) {
   return (
     <div className="home">
-      {/* Header is rendered globally by the app; page content below */}
+      {/* NAVBAR */}
+      <header className="navbar">
+        <div className="nav-left">
+          <div className="logo" onClick={() => onNavigate("home")}>
+            SmartMove
+          </div>
+          <ul className="nav-links">
+            <li onClick={() => onNavigate("services")}>Services</li>
+            <li onClick={() => onNavigate("about")}>About</li>
+            <li onClick={() => onNavigate("inventory")}>Inventory</li>
+            <li onClick={() => onNavigate("find-movers")}>Find Movers</li>
+            <li onClick={() => onNavigate("booking")}>Booking</li>
+            <li onClick={() => onNavigate("tracking")}>Track</li>
+          </ul>
+        </div>
 
-      {/* Hero Section */}
+        <div className="nav-right">
+          <button className="btn-link" onClick={() => onNavigate("login")}>
+            Login
+          </button>
+          <button className="btn-primary" onClick={() => onNavigate("signup")}>
+            Sign Up
+          </button>
+        </div>
+      </header>
+
+      {/* HERO */}
       <section className="hero">
-        <div className="hero-text">
-          <span className="trust-badge">Trusted by 10,000+ customers</span>
-
+        <div className="hero-left">
+          <div className="hero-logo">SmartMove</div>
           <h1>Your Stress-Free Moving Solution</h1>
-
           <p>
-            Professional moving services that make relocation simple, safe, and
-            affordable. Get your free quote in minutes.
+            Plan, book, track, and manage your move — whether you’re relocating,
+            moving professionally, or managing operations.
           </p>
 
-          <div className="hero-actions">
-            <button
-              className="btn-primary"
-              onClick={() => onNavigate("booking")}
-            >
-              Get Free Quote →
-            </button>
-            <button
-              className="btn-secondary"
-              onClick={() => onNavigate("movers")}
-            >
-              View Services
-            </button>
+          {/* ROLE SELECTOR */}
+          <div className="role-selector">
+            <h3>Continue as</h3>
+
+            <div className="role-cards">
+              <div
+                className="role-card"
+                onClick={() => onNavigate("login", { role: "client" })}
+              >
+                <h4>Client</h4>
+                <p>Plan your move, book movers, track inventory.</p>
+                <span>Get Started →</span>
+              </div>
+
+              <div
+                className="role-card"
+                onClick={() => onNavigate("login", { role: "mover" })}
+              >
+                <h4>Mover</h4>
+                <p>Manage jobs, update status, communicate with clients.</p>
+                <span>Enter Dashboard →</span>
+              </div>
+
+              <div
+                className="role-card admin"
+                onClick={() => onNavigate("login", { role: "admin" })}
+              >
+                <h4>Admin</h4>
+                <p>Approve movers, monitor bookings, view analytics.</p>
+                <span>Admin Access →</span>
+              </div>
+            </div>
           </div>
 
-          <div className="features">
-            <div>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="inline h-4 w-4 mr-2"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={3}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-              Fully Insured & Licensed
-            </div>
-            <div>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="inline h-4 w-4 mr-2"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v4l3 3"
-                />
-              </svg>
-              On-Time Guarantee
-            </div>
-            <div>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="inline h-4 w-4 mr-2"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 7h18M3 12h18M3 17h18"
-                />
-              </svg>
-              Transparent Pricing
-            </div>
-            <div>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="inline h-4 w-4 mr-2"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 6l2 4 4 .5-3 2 1 4-4-2-4 2 1-4-3-2L10 10 12 6z"
-                />
-              </svg>
-              5-Star Rated Service
-            </div>
+          {/* FEATURES */}
+          <div className="features-cards">
+            <div className="feature-card">✔ Fully Insured & Licensed</div>
+            <div className="feature-card">⏱ On-Time Guarantee</div>
+            <div className="feature-card">💰 Transparent Pricing</div>
+            <div className="feature-card">⭐ 5-Star Rated Service</div>
           </div>
         </div>
 
-        <div className="hero-image">
+        <div className="hero-right">
           <img
             src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c"
             alt="Modern living room"
           />
         </div>
       </section>
+
+      {/* FOOTER */}
+      <footer className="footer">
+        <p>Connect with us</p>
+        <div className="social-icons">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png"
+            alt="Instagram"
+          />
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/733/733585.png"
+            alt="WhatsApp"
+          />
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/733/733547.png"
+            alt="Facebook"
+          />
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/733/733579.png"
+            alt="Twitter"
+          />
+        </div>
+      </footer>
     </div>
   );
 }

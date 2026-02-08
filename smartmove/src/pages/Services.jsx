@@ -1,13 +1,18 @@
-import React from 'react'
-import './Services.css'
+import React from "react";
+import "./Services.css";
 
 export default function Services({ onNavigate }) {
   return (
     <div className="services-page">
-      {/* Header is rendered globally by the app; services content follows */}
+      {/* Back Button */}
+      <div className="services-header">
+        <button className="btn-back" onClick={() => onNavigate("home")}>
+          ← Back to Home
+        </button>
+      </div>
 
       <div className="content-container">
-        {/* Intro */}
+        {/* Hero Section */}
         <section className="services-hero">
           <span className="services-tag-pill">Comprehensive Solutions</span>
           <h1>Moving Services for Every Need</h1>
@@ -30,7 +35,7 @@ export default function Services({ onNavigate }) {
               "Basic insurance included",
             ]}
             price="Starting at KES 29,900"
-            onQuote={() => onNavigate('booking')}
+            onQuote={() => onNavigate("booking")}
           />
 
           <ServiceCard
@@ -44,7 +49,7 @@ export default function Services({ onNavigate }) {
               "Flexible scheduling",
             ]}
             price="Custom Quote"
-            onQuote={() => onNavigate('booking')}
+            onQuote={() => onNavigate("booking")}
           />
 
           <ServiceCard
@@ -58,7 +63,7 @@ export default function Services({ onNavigate }) {
               "Project management included",
             ]}
             price="Custom Quote"
-            onQuote={() => onNavigate('booking')}
+            onQuote={() => onNavigate("booking")}
           />
 
           <ServiceCard
@@ -72,39 +77,78 @@ export default function Services({ onNavigate }) {
               "Custom solutions available",
             ]}
             price="Starting at KES 39,900"
-            onQuote={() => onNavigate('booking')}
+            onQuote={() => onNavigate("booking")}
           />
         </section>
 
         {/* Why Choose Us */}
         <section className="why-choose">
           <p className="subtitle">Why Choose SmartMove</p>
-          <h2>We're committed to making your move smooth, safe, and stress-free</h2>
-          
+          <h2>
+            We're committed to making your move smooth, safe, and stress-free
+          </h2>
+
           <div className="usp-grid">
             <div className="usp-card">
               <div className="usp-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2l2 5 5 .5-4 3 1.2 5L12 14l-4.2 1.5L9 10 5 7l5-.5L12 2z" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 2l2 5 5 .5-4 3 1.2 5L12 14l-4.2 1.5L9 10 5 7l5-.5L12 2z"
+                  />
                 </svg>
               </div>
               <h4>Fully Licensed & Insured</h4>
               <p>Your belongings are protected every step of the way</p>
             </div>
+
             <div className="usp-card">
               <div className="usp-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5V8a2 2 0 00-2-2h-3M7 20H2V8a2 2 0 012-2h3m6 0H9" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 20h5V8a2 2 0 00-2-2h-3M7 20H2V8a2 2 0 012-2h3m6 0H9"
+                  />
                 </svg>
               </div>
               <h4>Experienced Team</h4>
               <p>Trained professionals with years of moving expertise</p>
             </div>
+
             <div className="usp-card">
               <div className="usp-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2v-7" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12l2 2 4-4"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2v-7"
+                  />
                 </svg>
               </div>
               <h4>Satisfaction Guaranteed</h4>
@@ -114,14 +158,16 @@ export default function Services({ onNavigate }) {
         </section>
       </div>
 
-      {/* Black Footer CTA */}
+      {/* Footer CTA */}
       <footer className="footer-cta">
         <p>Ready to Get Started?</p>
         <h2>Get a personalized quote for your move in just a few minutes</h2>
-        <button className="btn-footer" onClick={() => onNavigate('booking')}>Get Free Quote →</button>
+        <button className="btn-footer" onClick={() => onNavigate("booking")}>
+          Get Free Quote →
+        </button>
       </footer>
     </div>
-  )
+  );
 }
 
 function ServiceCard({ title, description, image, features, price, onQuote }) {
@@ -132,33 +178,57 @@ function ServiceCard({ title, description, image, features, price, onQuote }) {
       </div>
       <div className="service-content">
         <div className="card-header">
-           <div className="mini-icon">
-             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
-             </svg>
-           </div>
-           <div>
-             <h3>{title}</h3>
-             <p className="service-desc">{description}</p>
-           </div>
+          <div className="mini-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"
+              />
+            </svg>
+          </div>
+          <div>
+            <h3>{title}</h3>
+            <p className="service-desc">{description}</p>
+          </div>
         </div>
 
         <ul className="feature-list">
           {features.map((item, index) => (
-            <li key={index}><span className="check">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-              </svg>
-            </span> {item}</li>
+            <li key={index}>
+              <span className="check">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={3}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </span>
+              {item}
+            </li>
           ))}
         </ul>
 
         <div className="service-footer">
           <span className="price">{price}</span>
-          <button className="btn-quote-outline" onClick={onQuote}>Get Quote →</button>
+          <button className="btn-quote-outline" onClick={onQuote}>
+            Get Quote →
+          </button>
         </div>
       </div>
     </div>
-  )
+  );
 }
-

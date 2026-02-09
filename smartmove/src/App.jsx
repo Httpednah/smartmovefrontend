@@ -54,41 +54,44 @@ export default function App() {
         return <About onNavigate={navigate} />;
 
       case "login":
-        return <Login onSuccess={handleLoginSuccess} />;
+        return <Login onSuccess={handleLoginSuccess} onNavigate={navigate} />;
 
       case "signup":
-        return <Signup onSuccess={() => setPage("login")} />;
+        return (
+          <Signup onSuccess={() => setPage("login")} onNavigate={navigate} />
+        );
 
       case "client-dashboard":
         return (
           <ProtectedRoute userRole={role} allowedRoles={["client"]}>
-            <ClientDashboard />
+            <ClientDashboard onNavigate={navigate} />
           </ProtectedRoute>
         );
 
       case "mover-dashboard":
         return (
           <ProtectedRoute userRole={role} allowedRoles={["mover"]}>
-            <MoverDashboard />
+            <MoverDashboard onNavigate={navigate} />
           </ProtectedRoute>
         );
 
       case "admin":
         return (
           <ProtectedRoute userRole={role} allowedRoles={["admin"]}>
-            <Admin />
+            <Admin onNavigate={navigate} />
           </ProtectedRoute>
         );
 
       case "mymoves":
-        return <MyMoves />;
+        return <MyMoves onNavigate={navigate} />;
 
       case "inventory":
-        return <Inventory />;
+        return <Inventory onNavigate={navigate} />;
 
       case "movers":
         return (
           <Movers
+            onNavigate={navigate}
             onBook={(mover) => {
               setSelectedMover(mover);
               setPage("booking");
@@ -99,13 +102,14 @@ export default function App() {
       case "booking":
         return (
           <Booking
+            onNavigate={navigate}
             selectedMover={selectedMover}
             onConfirm={() => setPage("mymoves")}
           />
         );
 
       case "map":
-        return <MapView />;
+        return <MapView onNavigate={navigate} />;
 
       default:
         return <Home onNavigate={navigate} />;

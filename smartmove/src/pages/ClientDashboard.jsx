@@ -1,13 +1,19 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
-import { FiLogOut } from "react-icons/fi";
+import { FiLogOut, FiStar, FiThumbsUp } from "react-icons/fi";
 import "react-toastify/dist/ReactToastify.css";
 import "./ClientDashboard.css";
 
 export default function ClientDashboard({ onNavigate }) {
   const { signOut, user } = useContext(AuthContext);
   const [showPaymentDetails, setShowPaymentDetails] = React.useState(null);
+  const [showRatingModal, setShowRatingModal] = useState(false);
+  const [ratingType, setRatingType] = useState("app"); // "app" or "mover"
+  const [selectedMoverRating, setSelectedMoverRating] = useState(null);
+  const [appRating, setAppRating] = useState(0);
+  const [moverRating, setMoverRating] = useState(0);
+  const [ratingComment, setRatingComment] = useState("");
 
   const getPaymentHistory = () => {
     try {
@@ -17,7 +23,62 @@ export default function ClientDashboard({ onNavigate }) {
     }
   };
 
+  const getRatings = () => {
+    try {
+      return JSON.parse(localStorage.getItem("clientRatings") || "[]");
+    } catch (e) {
+      return [];
+    }
+  };
+
   const payments = getPaymentHistory();
+  const existingRatings = getRatings();
+
+  const handleRateApp = () => {
+    setRatingType("app");
+    setShowRatingModal(true);
+    setAppRating(0);
+    setRatingComment("");
+  };
+
+  const handleRateMover = (moverName) => {
+    setRatingType("mover");
+    setSelectedMoverRating(moverName);
+    setShowRatingModal(true);
+    setMoverRating(0);
+    setRatingComment("");
+  };
+
+  const submitRating = () => {
+    if (ratingType === "app" && appRating === 0) {
+      toast.error("Please select a rating!");
+      return;
+    }
+    if (ratingType === "mover" && moverRating === 0) {
+      toast.error("Please select a rating!");
+      return;
+    }
+
+    const newRating = {
+      id: Date.now(),
+      type: ratingType,
+      rating: ratingType === "app" ? appRating : moverRating,
+      comment: ratingComment,
+      moverName: ratingType === "mover" ? selectedMoverRating : null,
+      date: new Date().toLocaleDateString(),
+      userName: user?.name || "Anonymous",
+    };
+
+    const updatedRatings = [...existingRatings, newRating];
+    localStorage.setItem("clientRatings", JSON.stringify(updatedRatings));
+
+    toast.success(
+      ratingType === "app"
+        ? "🎉 Thank you for rating the app!"
+        : `⭐ Thanks for rating ${selectedMoverRating}!`,
+    );
+    setShowRatingModal(false);
+  };
 
   const handleLogout = () => {
     signOut();
@@ -207,8 +268,146 @@ export default function ClientDashboard({ onNavigate }) {
           >
             Contact Support
           </button>
+          <button className="action-btn rate-btn" onClick={handleRateApp}>
+            <FiThumbsUp /> Rate App
+          </button>
         </div>
       </section>
+
+      {/* Rating Modal */}
+      {showRatingModal && (
+        <div
+          className="rating-modal-overlay"
+          onClick={() => setShowRatingModal(false)}
+        >
+          <div className="rating-modal" onClick={(e) => e.stopPropagation()}>
+            <button
+              className="rating-close-btn"
+              onClick={() => setShowRatingModal(false)}
+            >
+              ×
+            </button>
+            <h2>
+              {ratingType === "app"
+                ? "Rate Our App"
+                : `Rate ${selectedMoverRating}`}
+            </h2>
+            <p className="rating-subtitle">
+              {ratingType === "app"
+                ? "How was your experience with SmartMove?"
+                : "How was your experience with this moving company?"}
+            </p>
+
+            <div className="star-rating">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  className={`star-btn ${
+                    (ratingType === "app" ? appRating : moverRating) >= star
+                      ? "star-active"
+                      : ""
+                  }`}
+                  onClick={() =>
+                    ratingType === "app"
+                      ? setAppRating(star)
+                      : setMoverRating(star)
+                  }
+                >
+                  <FiStar />
+                </button>
+              ))}
+            </div>
+
+            <div className="rating-labels">
+              <span>Poor</span>
+              <span>Excellent</span>
+            </div>
+
+            <textarea
+              className="rating-textarea"
+              placeholder={
+                ratingType === "app"
+                  ? "Tell us what you liked or how we can improve..."
+                  : "Share your experience with this mover..."
+              }
+              value={ratingComment}
+              onChange={(e) => setRatingComment(e.target.value)}
+              rows="4"
+            />
+
+            <button className="submit-rating-btn" onClick={submitRating}>
+              <FiThumbsUp /> Submit Rating
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Movers Rating Section - Show if client has completed bookings */}
+      {payments.length > 0 && (
+        <section className="client-section rating-section">
+          <h2>Rate Moving Companies</h2>
+          <p className="rating-section-subtitle">
+            Rate the movers who completed your moves
+          </p>
+          <div className="mover-rating-list">
+            {payments.map((payment, index) => (
+              <div key={index} className="mover-rating-item">
+                <div className="mover-rating-info">
+                  <h4>{payment.moverName || "Assigned Mover"}</h4>
+                  <p>
+                    {payment.from} → {payment.to} • {payment.moveDate}
+                  </p>
+                </div>
+                <button
+                  className="btn-rate-mover"
+                  onClick={() =>
+                    handleRateMover(payment.moverName || "Your Mover")
+                  }
+                >
+                  <FiStar /> Rate This Mover
+                </button>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* My Ratings Section */}
+      {existingRatings.length > 0 && (
+        <section className="client-section my-ratings-section">
+          <h2>My Ratings</h2>
+          <div className="my-ratings-list">
+            {existingRatings.map((rating) => (
+              <div key={rating.id} className="my-rating-item">
+                <div className="my-rating-header">
+                  <span className="my-rating-type">
+                    {rating.type === "app"
+                      ? "📱 App Rating"
+                      : "🚚 Mover Rating"}
+                  </span>
+                  <span className="my-rating-date">{rating.date}</span>
+                </div>
+                {rating.type === "mover" && rating.moverName && (
+                  <p className="my-rating-mover">{rating.moverName}</p>
+                )}
+                <div className="my-rating-stars">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <FiStar
+                      key={star}
+                      className={`star-icon ${
+                        rating.rating >= star ? "star-filled" : "star-empty"
+                      }`}
+                    />
+                  ))}
+                </div>
+                {rating.comment && (
+                  <p className="my-rating-comment">"{rating.comment}"</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

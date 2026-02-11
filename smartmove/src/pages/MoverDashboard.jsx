@@ -11,6 +11,7 @@ import {
   FiBarChart2,
   FiMapPin,
   FiLogOut,
+  FiUser,
 } from "react-icons/fi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -75,11 +76,8 @@ export default function MoverDashboard({ onNavigate }) {
     },
   ]);
 
-  const [showIssueTracker, setShowIssueTracker] = useState(false);
-
   const toggleAvailability = () => {
     setAvailable((prev) => !prev);
-    const newStatus = !available ? "available" : "unavailable";
     toast.success(
       available
         ? "🔴 You are now unavailable for new jobs"
@@ -89,18 +87,15 @@ export default function MoverDashboard({ onNavigate }) {
 
   const markComplete = (id) => {
     const job = jobs.find((j) => j.id === id);
-
     if (job.status === "completed") {
       toast.info("⚠️ This job has already been completed");
       return;
     }
-
     setJobs(
       jobs.map((job) =>
         job.id === id ? { ...job, status: "completed" } : job,
       ),
     );
-
     toast.success("✅ Job marked as completed successfully");
   };
 
@@ -125,7 +120,6 @@ export default function MoverDashboard({ onNavigate }) {
       toast.warning("⚠️ Please fill in all fields");
       return;
     }
-
     const newIssue = {
       id: reportedIssues.length + 1,
       subject: issueForm.subject,
@@ -138,7 +132,6 @@ export default function MoverDashboard({ onNavigate }) {
       }),
       resolution: null,
     };
-
     setReportedIssues([newIssue, ...reportedIssues]);
     toast.success(
       "✅ Issue reported successfully. Our team will review it soon.",
@@ -174,218 +167,154 @@ export default function MoverDashboard({ onNavigate }) {
 
       {/* HEADER */}
       <header className="dashboard-header">
-        <div>
+        <div className="header-left">
           <h1>🚚 Mover Dashboard</h1>
           <p>Track jobs, manage availability, and grow your earnings</p>
         </div>
-
-        <div className="dashboard-header-actions">
-          <button
-            className={`availability-toggle ${available ? "on" : "off"}`}
-            onClick={toggleAvailability}
-          >
-            <FiPower />
-            {available ? "Available" : "Unavailable"}
-          </button>
-          <button className="btn-logout" onClick={handleLogout}>
-            <FiLogOut /> Logout
-          </button>
+        <div className="header-right">
+          <div className="user-info">
+            <FiUser className="user-icon" />
+            <div className="user-details">
+              <span className="user-name">{user?.name || "Mover"}</span>
+              <span className="user-role">Professional Mover</span>
+            </div>
+          </div>
+          <div className="header-actions">
+            <button
+              className={`availability-toggle ${available ? "available" : "unavailable"}`}
+              onClick={toggleAvailability}
+            >
+              <FiPower />
+              <span>{available ? "Available" : "Unavailable"}</span>
+            </button>
+            <button className="btn-logout" onClick={handleLogout}>
+              <FiLogOut />
+              <span>Logout</span>
+            </button>
+          </div>
         </div>
       </header>
 
       {/* KPI CARDS */}
       <section className="dashboard-grid">
         <div className="dashboard-card">
-          <FiTruck className="card-icon" />
+          <div className="card-header">
+            <FiTruck className="card-icon" />
+            <span className="card-badge">Live</span>
+          </div>
           <h3>Active Jobs</h3>
           <p className="stat">
             {jobs.filter((j) => j.status === "in-progress").length}
           </p>
-          <span>Currently ongoing</span>
+          <span className="card-hint">Currently ongoing</span>
         </div>
 
         <div className="dashboard-card">
-          <FiCalendar className="card-icon" />
+          <div className="card-header">
+            <FiCalendar className="card-icon" />
+          </div>
           <h3>Upcoming Moves</h3>
           <p className="stat">5</p>
-          <span>Next 14 days</span>
+          <span className="card-hint">Next 14 days</span>
         </div>
 
-        <div className="dashboard-card">
-          <FiDollarSign className="card-icon" />
+        <div className="dashboard-card highlight">
+          <div className="card-header">
+            <FiDollarSign className="card-icon" />
+          </div>
           <h3>Total Earnings</h3>
           <p className="stat">KES {totalEarnings.toLocaleString()}</p>
-          <span>This month</span>
+          <span className="card-hint">This month</span>
         </div>
       </section>
 
       {/* QUICK ACTIONS */}
-      <section className="dashboard-actions">
-        <button onClick={handleEarningsBreakdown}>
-          <FiBarChart2 />
-          Earnings Breakdown
-        </button>
-        <button onClick={handleLiveTracking}>
-          <FiMapPin />
-          Live Job Tracking
-        </button>
-        <button onClick={handleReportIssue}>
-          <FiAlertTriangle />
-          Report an Issue
-          {/* PAYMENT HISTORY */}
-          {payments.length > 0 && (
-            <section className="dashboard-section payment-history-section">
-              <h2>Earnings & Payment History</h2>
-              <div className="confidential-badge">
-                Confidential - Verified Earnings Record
-              </div>
-              <div className="payment-history-list">
-                {payments.map((payment, index) => (
-                  <div key={index} className="payment-item">
-                    <div className="payment-header">
-                      <div className="payment-info-main">
-                        <h4>Transaction #{payment.id}</h4>
-                        <p className="payment-route">
-                          {payment.from} → {payment.to}
-                        </p>
-                        <p className="payment-date">
-                          {payment.date} at {payment.time}
-                        </p>
-                      </div>
-                      <div className="payment-amount">
-                        <span className="amount">
-                          + KES {payment.amount.toLocaleString()}
-                        </span>
-                        <span
-                          className={`status ${payment.status.toLowerCase()}`}
-                        >
-                          {payment.status}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="payment-details">
-                      <div className="detail-item">
-                        <span className="detail-label">Move Date:</span>
-                        <span className="detail-value">{payment.moveDate}</span>
-                      </div>
-                      <div className="detail-item">
-                        <span className="detail-label">Payment Method:</span>
-                        <span className="detail-value">
-                          {payment.paymentMethod}
-                        </span>
-                      </div>
-                      {payment.services && (
-                        <div className="services-added">
-                          {payment.services.packing && (
-                            <span className="service-tag">
-                              Packing Included
-                            </span>
-                          )}
-                          {payment.services.storage && (
-                            <span className="service-tag">
-                              Storage Included
-                            </span>
-                          )}
-                          {payment.services.insurance && (
-                            <span className="service-tag">
-                              Insurance Included
-                            </span>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                    <button
-                      className="btn-view-receipt"
-                      onClick={() =>
-                        setShowPaymentDetails(
-                          showPaymentDetails === index ? null : index,
-                        )
-                      }
-                    >
-                      {showPaymentDetails === index
-                        ? "Hide Receipt"
-                        : "View Receipt"}
-                    </button>
-                    {showPaymentDetails === index && (
-                      <div className="receipt-modal">
-                        <div className="receipt-content">
-                          <h3>Payment Verification Receipt</h3>
-                          <div className="receipt-info">
-                            <p>
-                              <strong>Reference:</strong> {payment.reference}
-                            </p>
-                            <p>
-                              <strong>Amount Earned:</strong> KES{" "}
-                              {payment.amount.toLocaleString()}
-                            </p>
-                            <p>
-                              <strong>Date:</strong> {payment.date}{" "}
-                              {payment.time}
-                            </p>
-                            <p>
-                              <strong>From:</strong> {payment.from}
-                            </p>
-                            <p>
-                              <strong>To:</strong> {payment.to}
-                            </p>
-                            <p>
-                              <strong>Move Date:</strong> {payment.moveDate}
-                            </p>
-                            <p>
-                              <strong>Status:</strong> {payment.status}
-                            </p>
-                            <p className="confidential-note">
-                              This receipt is confidential and issued solely as
-                              verified earnings record for your accounts.
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-        </button>
+      <section className="actions-section">
+        <h2 className="section-title">Quick Actions</h2>
+        <div className="actions-grid">
+          <button className="action-card" onClick={handleEarningsBreakdown}>
+            <div className="action-icon earnings-icon">
+              <FiBarChart2 />
+            </div>
+            <div className="action-content">
+              <h4>Earnings Breakdown</h4>
+              <p>View detailed earnings and payouts</p>
+            </div>
+            <span className="action-arrow">→</span>
+          </button>
+
+          <button className="action-card" onClick={handleLiveTracking}>
+            <div className="action-icon tracking-icon">
+              <FiMapPin />
+            </div>
+            <div className="action-content">
+              <h4>Live Job Tracking</h4>
+              <p>Track your current jobs in real-time</p>
+            </div>
+            <span className="action-arrow">→</span>
+          </button>
+
+          <button className="action-card" onClick={handleReportIssue}>
+            <div className="action-icon issue-icon">
+              <FiAlertTriangle />
+            </div>
+            <div className="action-content">
+              <h4>Report an Issue</h4>
+              <p>Get help with any problems</p>
+            </div>
+            <span className="action-arrow">→</span>
+          </button>
+        </div>
       </section>
 
       {/* JOB LIST */}
-      <section className="dashboard-section">
-        <h2>Recent Jobs</h2>
+      <section className="dashboard-section jobs-section">
+        <div className="section-header">
+          <h2>📋 Recent Jobs</h2>
+          <span className="job-count">{jobs.length} total</span>
+        </div>
 
-        {jobs.map((job) => (
-          <div key={job.id} className="job-card">
-            <div className="job-info">
-              <strong>{job.client}</strong>
-              <span>{job.date}</span>
-              <span>{job.location}</span>
-            </div>
-
-            <div className="job-controls">
-              <span className={`status ${job.status}`}>
-                {job.status === "in-progress" ? (
-                  <>
-                    <FiClock /> In Progress
-                  </>
-                ) : (
-                  <>
-                    <FiCheckCircle /> Completed
-                  </>
-                )}
-              </span>
-
+        <div className="jobs-list">
+          {jobs.map((job) => (
+            <div key={job.id} className="job-card">
+              <div className="job-main">
+                <div className="job-client">
+                  <div className="client-avatar">
+                    {job.client.charAt(0)}
+                  </div>
+                  <div className="client-info">
+                    <strong>{job.client}</strong>
+                    <span className="job-location">
+                      <FiMapPin /> {job.location}
+                    </span>
+                  </div>
+                </div>
+                <div className="job-meta">
+                  <span className="job-date">{job.date}</span>
+                  <span className={`status-badge ${job.status}`}>
+                    {job.status === "in-progress" ? (
+                      <>
+                        <FiClock className="status-icon" /> In Progress
+                      </>
+                    ) : (
+                      <>
+                        <FiCheckCircle className="status-icon" /> Completed
+                      </>
+                    )}
+                  </span>
+                </div>
+              </div>
               {job.status === "in-progress" && (
                 <button
                   className="complete-btn"
                   onClick={() => markComplete(job.id)}
                 >
-                  Complete Job
+                  <FiCheckCircle /> Complete Job
                 </button>
               )}
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </section>
 
       {/* ISSUE TRACKER */}
@@ -403,11 +332,19 @@ export default function MoverDashboard({ onNavigate }) {
                   <div className="issue-title">
                     <strong>{issue.subject}</strong>
                     <span className={`issue-status ${issue.status}`}>
-                      {issue.status === "pending"
-                        ? "⏳ Pending"
-                        : issue.status === "in-progress"
-                          ? "🔄 In Progress"
-                          : "✅ Resolved"}
+                      {issue.status === "pending" ? (
+                        <>
+                          <FiClock /> Pending
+                        </>
+                      ) : issue.status === "in-progress" ? (
+                        <>
+                          <FiClock /> In Progress
+                        </>
+                      ) : (
+                        <>
+                          <FiCheckCircle /> Resolved
+                        </>
+                      )}
                     </span>
                   </div>
                   <span className="issue-date">{issue.date}</span>
@@ -427,7 +364,7 @@ export default function MoverDashboard({ onNavigate }) {
                 <div className="issue-actions">
                   {issue.status === "pending" && (
                     <button
-                      className="issue-btn status-btn"
+                      className="issue-btn progress-btn"
                       onClick={() => updateIssueStatus(issue.id, "in-progress")}
                     >
                       Mark In Progress
@@ -435,7 +372,7 @@ export default function MoverDashboard({ onNavigate }) {
                   )}
                   {issue.status === "in-progress" && (
                     <button
-                      className="issue-btn status-btn"
+                      className="issue-btn resolve-btn"
                       onClick={() => updateIssueStatus(issue.id, "resolved")}
                     >
                       Mark Resolved
@@ -457,6 +394,113 @@ export default function MoverDashboard({ onNavigate }) {
           </div>
         )}
       </section>
+
+      {/* PAYMENT HISTORY */}
+      {payments.length > 0 && (
+        <section className="dashboard-section payment-section">
+          <div className="section-header">
+            <h2>💰 Earnings & Payment History</h2>
+          </div>
+          <div className="confidential-badge">
+            Confidential - Verified Earnings Record
+          </div>
+          <div className="payment-history-list">
+            {payments.map((payment, index) => (
+              <div key={index} className="payment-item">
+                <div className="payment-header">
+                  <div className="payment-info-main">
+                    <h4>Transaction #{payment.id}</h4>
+                    <p className="payment-route">
+                      {payment.from} → {payment.to}
+                    </p>
+                    <p className="payment-date">
+                      {payment.date} at {payment.time}
+                    </p>
+                  </div>
+                  <div className="payment-amount">
+                    <span className="amount">
+                      + KES {payment.amount.toLocaleString()}
+                    </span>
+                    <span className={`status ${payment.status.toLowerCase()}`}>
+                      {payment.status}
+                    </span>
+                  </div>
+                </div>
+                <div className="payment-details">
+                  <div className="detail-row">
+                    <span className="detail-label">Move Date:</span>
+                    <span className="detail-value">{payment.moveDate}</span>
+                  </div>
+                  <div className="detail-row">
+                    <span className="detail-label">Payment Method:</span>
+                    <span className="detail-value">{payment.paymentMethod}</span>
+                  </div>
+                  {payment.services && (
+                    <div className="services-added">
+                      {payment.services.packing && (
+                        <span className="service-tag">Packing</span>
+                      )}
+                      {payment.services.storage && (
+                        <span className="service-tag">Storage</span>
+                      )}
+                      {payment.services.insurance && (
+                        <span className="service-tag">Insurance</span>
+                      )}
+                    </div>
+                  )}
+                </div>
+                <button
+                  className="btn-view-receipt"
+                  onClick={() =>
+                    setShowPaymentDetails(
+                      showPaymentDetails === index ? null : index,
+                    )
+                  }
+                >
+                  {showPaymentDetails === index ? "Hide Receipt" : "View Receipt"}
+                </button>
+                {showPaymentDetails === index && (
+                  <div className="receipt-modal">
+                    <div className="receipt-content">
+                      <h3>Payment Verification Receipt</h3>
+                      <div className="receipt-info">
+                        <p>
+                          <strong>Reference:</strong> {payment.reference}
+                        </p>
+                        <p>
+                          <strong>Amount Earned:</strong> KES{" "}
+                          {payment.amount.toLocaleString()}
+                        </p>
+                        <p>
+                          <strong>Date:</strong> {payment.date} {payment.time}
+                        </p>
+                        <p>
+                          <strong>From:</strong> {payment.from}
+                        </p>
+                        <p>
+                          <strong>To:</strong> {payment.to}
+                        </p>
+                        <p>
+                          <strong>Move Date:</strong> {payment.moveDate}
+                        </p>
+                        <p>
+                          <strong>Status:</strong> {payment.status}
+                        </p>
+                        <p className="confidential-note">
+                          This receipt is confidential and issued solely as
+                          verified earnings record for your accounts.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* EARNINGS MODAL */}
       {showEarnings && (
         <div className="modal-overlay" onClick={() => setShowEarnings(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -571,3 +615,4 @@ export default function MoverDashboard({ onNavigate }) {
     </div>
   );
 }
+
